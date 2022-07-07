@@ -1,18 +1,24 @@
 import '../styles/app.scss'
 import Sidebar from 'components/Sidebar';
 import Header from 'components/Header';
-import { SWRConfig } from 'swr';
 import { Card, DarkThemeToggle, Flowbite } from 'flowbite-react';
 import MachineStateUpdator from 'components/MachineStateUpdator';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: ({ queryKey }) => fetch(`http://10.0.0.94/api${queryKey}`).then(res => res.json())
+    }
+  }
+})
 
 function MyApp({ Component, pageProps }) {
   return (
      <Flowbite>
        <DarkThemeToggle/>
-       <SWRConfig value={ {
-         fetcher: (resource, init) => fetch(resource, init).then(res => res.json()),
-       } }>
+       <QueryClientProvider client={queryClient}>
          <div className="w-full mx-auto">
            <MachineStateUpdator/>
            <Header/>
@@ -27,7 +33,8 @@ function MyApp({ Component, pageProps }) {
              </div>
            </div>
          </div>
-       </SWRConfig>
+         <ReactQueryDevtools initialIsOpen />
+       </QueryClientProvider>
      </Flowbite>
   )
 }

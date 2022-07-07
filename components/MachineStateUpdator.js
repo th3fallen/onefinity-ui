@@ -1,15 +1,16 @@
 import { useStore } from 'store/store';
-import useSwr from 'swr';
 import useWebSocket from 'react-use-websocket';
 import { useEffect } from 'react';
 import { isEmpty, omit } from 'lodash';
+import { useQuery } from 'react-query';
 
 export default function MachineStateUpdator() {
 
   const machineStateActions = useStore(store => store.machineState.actions);
   const configActions = useStore(store => store.config.actions);
 
-  const { data, error } = useSwr('http://10.0.0.94/api/config/load');
+  const { status, data, error, isFetching} = useQuery('/config/load');
+
   const { lastJsonMessage } = useWebSocket('ws://10.0.0.94/sockjs/websocket', {
     share: true,
   });
@@ -34,7 +35,6 @@ export default function MachineStateUpdator() {
         // todo: broadcast log message
         delete trimmedPayload.log;
       }
-      console.log('index:42', 'payload changed', trimmedPayload);
       machineStateActions.updateMachineState(trimmedPayload)
     }
   }, [lastJsonMessage]);

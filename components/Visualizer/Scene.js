@@ -1,10 +1,12 @@
 import { useThree } from '@react-three/fiber';
 import { AmbientLight, Color, DirectionalLight, Group } from 'three';
 import DrawBounds from 'components/Visualizer/Box';
+import Toolpath from 'components/Visualizer/Toolpath';
 
 
-export default function Scene() {
+export default function Scene(props) {
 
+  const { toolpath } = props;
   const { scene } = useThree();
 
   const lights = () => {
@@ -31,6 +33,7 @@ export default function Scene() {
   scene.add(new AmbientLight(0xffffff, 0.5));
   scene.add(lights())
   DrawBounds(scene);
+  scene.add(Toolpath(toolpath))
 
   return null;
 }
