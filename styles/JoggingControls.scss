@@ -1,0 +1,18 @@
+.jogging-controls {
+
+  .active {
+    @apply dark:bg-slate-300 dark:text-gray-700 #{!important};
+  }
+
+  .jogging-control {
+    @apply col-span-1 bg-gray-50 border border-gray-300 h-16 w-16 flex justify-center items-center cursor-pointer;
+    @apply hover:bg-gray-200 hover:dark:bg-gray-500;
+    @apply dark:text-gray-400 dark:bg-gray-700 dark:border-slate-800;
+  }
+
+  .probe-control {
+    @apply bg-gray-50 border border-gray-300 h-16 w-32 flex justify-center items-center cursor-pointer;
+    @apply hover:bg-gray-200 hover:dark:bg-gray-500;
+    @apply dark:text-gray-400 dark:bg-gray-700 dark:border-slate-800;
+  }
+}

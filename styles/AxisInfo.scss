@@ -1,0 +1,20 @@
+.axis-info {
+
+  .axis-x {
+    .axis-name {
+      @apply text-red-600;
+    }
+  }
+
+  .axis-y {
+    .axis-name {
+      @apply text-yellow-400;
+    }
+  }
+
+  .axis-z {
+    .axis-name {
+      @apply text-blue-600;
+    }
+  }
+}
