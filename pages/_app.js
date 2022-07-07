@@ -6,10 +6,12 @@ import MachineStateUpdator from 'components/MachineStateUpdator';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
+export const defaultQuery = ({ queryKey, signal }) => fetch(`http://10.0.0.94/api${queryKey}`, {signal}).then(res => res.json());
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      queryFn: ({ queryKey }) => fetch(`http://10.0.0.94/api${queryKey}`).then(res => res.json())
+      queryFn: defaultQuery,
     }
   }
 })

@@ -2,12 +2,19 @@ import { useThree } from '@react-three/fiber';
 import { AmbientLight, Color, DirectionalLight, Group } from 'three';
 import DrawBounds from 'components/Visualizer/Box';
 import Toolpath from 'components/Visualizer/Toolpath';
+import Axis from 'components/Visualizer/Axis';
+import { useEffect } from 'react';
 
 
 export default function Scene(props) {
 
   const { toolpath } = props;
-  const { scene } = useThree();
+  const { scene, camera } = useThree();
+
+  useEffect(() => {
+    camera.updateProjectionMatrix();
+
+  }, [toolpath]);
 
   const lights = () => {
     const keyLight = new DirectionalLight
@@ -32,7 +39,8 @@ export default function Scene(props) {
 
   scene.add(new AmbientLight(0xffffff, 0.5));
   scene.add(lights())
-  DrawBounds(scene);
+  scene.add(Axis())
+  DrawBounds(toolpath);
   scene.add(Toolpath(toolpath))
 
   return null;

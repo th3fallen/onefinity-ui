@@ -1,24 +1,16 @@
-import { Box3, BufferGeometry, Float32BufferAttribute, LineBasicMaterial, LineSegments, Vector3 } from 'three';
+import {
+  Box3,
+  BoxGeometry,
+  BufferGeometry,
+  Float32BufferAttribute,
+  LineBasicMaterial,
+  LineSegments, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+  Vector3,
+   FrontSide
+} from 'three';
 import { useThree } from '@react-three/fiber';
 import { useStore } from 'store/store';
 import Tool from 'components/Visualizer/Tool';
-
-export function Box(props) {
-
-  const addObject = (object) => {
-    if (typeof object !== 'undefined') {
-      const tempBox = new Box3();
-      tempBox.setFromObject(object);
-      boundaryBox.union(tempBox);
-    }
-  };
-
-  const boundaryBox = new Box3(new Vector3(0,0,0), new Vector3(0.00001, 0.00001, 0.00001));
-
-
-  return boundaryBox;
-}
-
 
 function createBoxGeometry(boundingBox) {
   if (boundingBox.isEmpty()) {
@@ -60,33 +52,59 @@ function createBoxGeometry(boundingBox) {
   return geometry;
 }
 
-export default function DrawBounds() {
+const generateEnvelope = (bounds) => {
+
+
+  const envelopeGeometry = createBoxGeometry(bounds);
+  return new LineSegments(envelopeGeometry, new LineBasicMaterial({color: 0x00f7ff}))
+};
+
+const generateWorkpiece = (toolpath, scene) => {
+  if (!toolpath?.toolpath) {
+    return false;
+  }
+  let {min, max} = toolpath.toolpath.bounds;
+  min = new Vector3(min.x, min.y, min.z);
+  max = new Vector3(max.x, max.y, max.z);
+
+  const dimensions = max.clone().sub(min);
+
+  const geometry = new BoxGeometry(dimensions.x, dimensions.y, dimensions.z);
+  const mesh = new Mesh(geometry, new MeshPhongMaterial({
+    specular: 0x111111,
+    shininess: 10,
+    side: FrontSide,
+    color: 0xffffff, // White
+    wireframe: true
+  }));
+
+  const offset = dimensions.clone();
+  offset.divideScalar(2);
+  offset.add(min);
+
+  mesh.position.add(offset);
+
+  geometry.computeBoundingBox();
+
+  scene.add(mesh);
+
+  return mesh;
+};
+
+export default function DrawBounds(toolpath) {
   const { scene } = useThree();
   const axisInfo = useStore(store => store.machineState.data.axis_data);
 
+  const min = new Vector3(axisInfo.x.min - axisInfo.x.off, axisInfo.y.min - axisInfo.y.off, axisInfo.z.min - axisInfo.z.off);
+  const max = new Vector3(axisInfo.x.max - axisInfo.x.off, axisInfo.y.max - axisInfo.y.off, axisInfo.z.max - axisInfo.z.off);
 
-  let min = new Vector3();
-  let max = new Vector3();
-
-  min.x = axisInfo.x.min - axisInfo.x.off;
-  min.y = axisInfo.y.min - axisInfo.y.off;
-  min.z = axisInfo.z.min - axisInfo.z.off;
-  max.x = axisInfo.x.max - axisInfo.x.off;
-  max.y = axisInfo.y.max - axisInfo.y.off;
-  max.z = axisInfo.z.max - axisInfo.z.off;
-
-  const bounds = new Box3(min, max);
+  const envelopeBounds = new Box3(min, max);
 
 
-  const geometry = createBoxGeometry(bounds);
-  const material = new LineBasicMaterial({color: 0xffffff});
-  const line = new LineSegments(geometry, material);
-  const envelopeLine = new LineSegments(geometry, new LineBasicMaterial({color: 0x00f7ff}))
-
-  scene.add(line);
-  scene.add(envelopeLine);
-  scene.add(Tool(bounds, axisInfo));
+  generateWorkpiece(toolpath, scene);
+  scene.add(generateEnvelope(envelopeBounds));
+  scene.add(Tool(envelopeBounds, axisInfo));
 
 
-  return bounds;
+  return envelopeBounds;
 }

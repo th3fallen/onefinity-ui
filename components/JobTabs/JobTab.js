@@ -4,21 +4,6 @@ import { useStore } from 'store/store';
 import { useQuery } from 'react-query';
 
 export default function JobTab(props) {
-  const selectedFile = useStore(store => store.machineState.data)?.selected;
-  const { data: toolpath } = useQuery(`/path/${ selectedFile }`);
-  const { data: pathPositions } = useQuery(`/path/${ selectedFile }/positions`);
-  const { data: pathSpeeds } = useQuery(`/path/${ selectedFile }/speeds`);
-
-  const data = {
-    toolpath,
-    pathPositions,
-    pathSpeeds,
-  };
-
-  if (!selectedFile || !pathSpeeds) {
-    return null;
-  }
-  console.log('JobTab:21', data);
   return (
      <Card>
        <Button.Group>
@@ -40,7 +25,7 @@ export default function JobTab(props) {
        </Button.Group>
 
        <div className="flex flex-row">
-         <GcodeViewer toolpath={ data }/>
+         <GcodeViewer/>
        </div>
      </Card>
   );
