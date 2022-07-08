@@ -2,7 +2,6 @@ import { CylinderGeometry, Mesh, MeshPhongMaterial, Vector3 } from 'three';
 
 export default function Tool(box, axisData) {
   const size = box.getSize(new Vector3());
-  const length = Math.max(size.x + size.y + size.z / 24, 1);
 
   const material = new MeshPhongMaterial({
     transparent: true,

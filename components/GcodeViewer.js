@@ -1,10 +1,8 @@
 import { Suspense } from 'react';
-import OrbitControls from 'components/Visualizer/OrbitControls';
 import { Canvas } from '@react-three/fiber';
-import Draggable from 'components/Visualizer/Draggable';
 import Loading from 'components/Visualizer/Loading';
 import Scene from 'components/Visualizer/Scene';
-import Axis from 'components/Visualizer/Axis';
+import { OrbitControls } from '@react-three/drei';
 import { useStore } from 'store/store';
 import { useQuery } from 'react-query';
 
@@ -37,14 +35,15 @@ export default function GcodeViewer(props) {
           shadows
           camera={ {
             fov: 45,
+            near: 1,
             far: 10000,
+            aspect: 4 / 3,
+            position: [0, 0, 600],
           } }
        >
          <Scene toolpath={ data }/>
-         <Draggable>
-           <Suspense fallback={ Loading }>
-           </Suspense>
-         </Draggable>
+         <Suspense fallback={ Loading }>
+         </Suspense>
          <OrbitControls/>
        </Canvas>
      </div>

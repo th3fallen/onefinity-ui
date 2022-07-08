@@ -16,7 +16,7 @@ export default function Toolpath(toolpath) {
     vertexColors: true,
     linewidth: 1.5,
   });
-  const positions = new Float32BufferAttribute()
+  const positions = new Float32BufferAttribute(toolpath.pathPositions, 3)
   geometry.setAttribute('position', positions);
 
   let colors = [];

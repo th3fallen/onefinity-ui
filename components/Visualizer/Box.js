@@ -3,21 +3,33 @@ import {
   BoxGeometry,
   BufferGeometry,
   Float32BufferAttribute,
+  FrontSide,
   LineBasicMaterial,
-  LineSegments, Mesh, MeshBasicMaterial, MeshPhongMaterial,
+  LineSegments,
+  Mesh,
+  MeshPhongMaterial,
   Vector3,
-   FrontSide
 } from 'three';
 import { useThree } from '@react-three/fiber';
 import { useStore } from 'store/store';
 import Tool from 'components/Visualizer/Tool';
+
+let box = new Box3(new Vector3(0, 0, 0), new Vector3(0.00001, 0.00001, 0.00001));
+
+export function addToBox(obj) {
+  if (typeof obj !== 'undefined') {
+    const tempBox = new Box3();
+    tempBox.setFromObject(obj);
+    box = box.union(tempBox);
+  }
+}
 
 function createBoxGeometry(boundingBox) {
   if (boundingBox.isEmpty()) {
     return false;
   }
   const vertices = [
-     //Top
+    //Top
     boundingBox.min.x, boundingBox.min.y, boundingBox.min.z,
     boundingBox.max.x, boundingBox.min.y, boundingBox.min.z,
     boundingBox.max.x, boundingBox.min.y, boundingBox.min.z,
@@ -53,17 +65,15 @@ function createBoxGeometry(boundingBox) {
 }
 
 const generateEnvelope = (bounds) => {
-
-
   const envelopeGeometry = createBoxGeometry(bounds);
-  return new LineSegments(envelopeGeometry, new LineBasicMaterial({color: 0x00f7ff}))
+  return new LineSegments(envelopeGeometry, new LineBasicMaterial({ color: 0x00f7ff }))
 };
 
-const generateWorkpiece = (toolpath, scene) => {
+export const generateWorkpiece = (toolpath, scene) => {
   if (!toolpath?.toolpath) {
-    return false;
+    return;
   }
-  let {min, max} = toolpath.toolpath.bounds;
+  let { min, max } = toolpath.toolpath.bounds;
   min = new Vector3(min.x, min.y, min.z);
   max = new Vector3(max.x, max.y, max.z);
 
@@ -75,7 +85,7 @@ const generateWorkpiece = (toolpath, scene) => {
     shininess: 10,
     side: FrontSide,
     color: 0xffffff, // White
-    wireframe: true
+    wireframe: true,
   }));
 
   const offset = dimensions.clone();
@@ -88,6 +98,7 @@ const generateWorkpiece = (toolpath, scene) => {
 
   scene.add(mesh);
 
+  box = new Box3(min, max);
   return mesh;
 };
 
@@ -98,13 +109,11 @@ export default function DrawBounds(toolpath) {
   const min = new Vector3(axisInfo.x.min - axisInfo.x.off, axisInfo.y.min - axisInfo.y.off, axisInfo.z.min - axisInfo.z.off);
   const max = new Vector3(axisInfo.x.max - axisInfo.x.off, axisInfo.y.max - axisInfo.y.off, axisInfo.z.max - axisInfo.z.off);
 
-  const envelopeBounds = new Box3(min, max);
-
+  box = new Box3(min, max);
 
   generateWorkpiece(toolpath, scene);
-  scene.add(generateEnvelope(envelopeBounds));
-  scene.add(Tool(envelopeBounds, axisInfo));
+  scene.add(generateEnvelope(box));
+  scene.add(Tool(box, axisInfo));
 
-
-  return envelopeBounds;
+  return box;
 }

@@ -32,7 +32,7 @@ export default function Axis() {
   };
 
   const size = Box().getSize(new Vector3());
-  let length = Math.max((size.x + size.y + size.z) / 3, 1);
+  let length = Math.max((size.x + size.y + size.z) / 10, 1);
   length /= 10;
 
   const radius = length / 20;
