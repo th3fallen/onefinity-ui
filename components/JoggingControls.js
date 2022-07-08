@@ -3,20 +3,23 @@ import { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 
 import 'styles/JoggingControls.scss';
-import { useStore } from 'store/store';
+import { useMachineState, useStore } from 'store/store';
 import classNames from 'classnames';
+import shallow from 'zustand/shallow';
 
 export default function JoggingControls() {
 
-  const machineState = useStore(store => store.machineState.data);
+  const [jogInc, machUnits] = useStore(state => [state.machineState.data.jog_incr, state.machineState.data.mach_units], shallow);
   const { sendMessage } = useWebSocket('ws://10.0.0.94/sockjs/websocket', {
     share: true,
     filter: () => false, // ignore all message updates
   });
 
-  const [jogIncrement, setJogIncrement] = useState(machineState.jog_incr);
+  console.log('JoggingControls:17', jogInc, machUnits);
 
-  const joggingIncrements = JOGGING_CONSTS.INCREMENTS[machineState.mach_units];
+  const [jogIncrement, setJogIncrement] = useState(jogInc);
+
+  const joggingIncrements = JOGGING_CONSTS.INCREMENTS[machUnits];
 
   const jog = (directions) => () => {
     if (!directions.includes(',')) {

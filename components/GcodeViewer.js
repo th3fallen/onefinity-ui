@@ -3,11 +3,11 @@ import { Canvas } from '@react-three/fiber';
 import Loading from 'components/Visualizer/Loading';
 import Scene from 'components/Visualizer/Scene';
 import { OrbitControls } from '@react-three/drei';
-import { useStore } from 'store/store';
+import { useMachineState } from 'store/store';
 import { useQuery } from 'react-query';
 
 export default function GcodeViewer(props) {
-  const selectedFile = useStore(store => store.machineState.data)?.selected;
+  const selectedFile = useMachineState().data?.selected;
 
   async function getBuffer({ queryKey }) {
     const response = await fetch(`http://10.0.0.94/api${ queryKey }`);

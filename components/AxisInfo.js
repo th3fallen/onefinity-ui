@@ -1,11 +1,12 @@
 import { useStore } from 'store/store';
 import { Button, Table } from 'flowbite-react';
+import Number from 'components/helpers/Number';
+import shallow from 'zustand/shallow';
 
 import 'styles/AxisInfo.scss';
 
 export default function AxisInfo() {
-  const machineState = useStore(store => store.machineState).data;
-  const axisInfo = machineState.axis_data;
+  const axisInfo = useStore(store => store.machineState.data.axis_data, shallow);
 
   const renderAxisState = (axis) => {
     const axisState = axisInfo[axis];
@@ -36,13 +37,13 @@ export default function AxisInfo() {
        <Table.Row className={ `axis axis-${ axis }` }>
          <Table.Cell className="axis-name text-2xl uppercase">{ axis }</Table.Cell>
          <Table.Cell>
-           { axisInfo[axis].pos }<span className="unit">mm</span>
+           <Number value={ axisInfo[axis].pos } precision={ 4 }/>
          </Table.Cell>
          <Table.Cell>
-           { axisInfo[axis].abs }<span className="unit">mm</span>
+           <Number value={ axisInfo[axis].abs } precision={ 3 }/>
          </Table.Cell>
          <Table.Cell>
-           { axisInfo[axis].off }<span className="unit">mm</span>
+           <Number value={ axisInfo[axis].off } precision={ 3 }/>
          </Table.Cell>
          <Table.Cell>{ renderAxisState(axis) }</Table.Cell>
          <Table.Cell>{ renderToolpathState(axis) }</Table.Cell>

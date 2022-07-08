@@ -9,3 +9,12 @@ export const useStore = create()(devtools((...a) => ({
 })))
 
 export const { getState, setState, subscribe, destroy } = useStore;
+
+
+export function useMachineState(fields = null) {
+    return useStore(store => store.machineState);
+}
+
+export function useConfigState(fields = null) {
+    return useStore(store => store.config);
+}

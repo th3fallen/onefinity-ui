@@ -11,7 +11,7 @@ import {
   Vector3,
 } from 'three';
 import { useThree } from '@react-three/fiber';
-import { useStore } from 'store/store';
+import { useMachineState } from 'store/store';
 import Tool from 'components/Visualizer/Tool';
 
 let box = new Box3(new Vector3(0, 0, 0), new Vector3(0.00001, 0.00001, 0.00001));
@@ -104,7 +104,7 @@ export const generateWorkpiece = (toolpath, scene) => {
 
 export default function DrawBounds(toolpath) {
   const { scene } = useThree();
-  const axisInfo = useStore(store => store.machineState.data.axis_data);
+  const axisInfo = useMachineState().data.axis_data;
 
   const min = new Vector3(axisInfo.x.min - axisInfo.x.off, axisInfo.y.min - axisInfo.y.off, axisInfo.z.min - axisInfo.z.off);
   const max = new Vector3(axisInfo.x.max - axisInfo.x.off, axisInfo.y.max - axisInfo.y.off, axisInfo.z.max - axisInfo.z.off);

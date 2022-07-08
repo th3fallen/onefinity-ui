@@ -1,4 +1,4 @@
-import { useStore } from 'store/store';
+import { useMachineState, useConfigState } from 'store/store';
 import useWebSocket from 'react-use-websocket';
 import { useEffect } from 'react';
 import { isEmpty, omit } from 'lodash';
@@ -6,8 +6,8 @@ import { useQuery } from 'react-query';
 
 export default function MachineStateUpdator() {
 
-  const machineStateActions = useStore(store => store.machineState.actions);
-  const configActions = useStore(store => store.config.actions);
+  const machineStateActions = useMachineState().actions;
+  const configActions = useConfigState().actions;
 
   const { status, data, error, isFetching} = useQuery('/config/load');
 

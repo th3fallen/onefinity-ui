@@ -1,11 +1,23 @@
 import { Table, Button, Select } from 'flowbite-react';
 
-import { useStore } from 'store/store';
+import { useMachineState, useStore } from 'store/store';
+import shallow from 'zustand/shallow';
 
 export default function SystemState() {
 
-  const machineStore = useStore(store => store.machineState);
-  const machineState = machineStore.data;
+  const [cycle, machUnits, tool, v, feed, speed, s, load1, load2, toolpath] = useStore(store => [
+     store.machineState.data.cycle,
+     store.machineState.data.mach_units,
+     store.machineState.data.tool,
+     store.machineState.data.v,
+     store.machineState.data.feed,
+     store.machineState.data.speed,
+     store.machineState.data.s,
+     store.machineState.data['1oa'],
+     store.machineState.data['2oa'],
+     store.machineState.data.toolpath
+  ], shallow);
+
 
   return (
      <Table className="table-auto w-full mt-10">
@@ -16,7 +28,7 @@ export default function SystemState() {
              <Table.Body>
              <Table.Row>
                <Table.HeadCell>State</Table.HeadCell>
-               <Table.Cell>{ machineState.cycle.toUpperCase() }</Table.Cell>
+               <Table.Cell>{ cycle.toUpperCase() }</Table.Cell>
              </Table.Row>
              <Table.Row>
                <Table.HeadCell>Message</Table.HeadCell>
@@ -25,7 +37,7 @@ export default function SystemState() {
              <Table.Row title="Active machine units">
                <Table.HeadCell>Units</Table.HeadCell>
                <Table.Cell className="mach_units">
-                 <Select defaultValue={machineState.mach_units}>
+                 <Select defaultValue={machUnits}>
                    <option value="METRIC">METRIC</option>
                    <option value="IMPERIAL">IMPERIAL</option>
                  </Select>
@@ -33,7 +45,7 @@ export default function SystemState() {
              </Table.Row>
              <Table.Row title="Active tool">
                <Table.HeadCell>Tool</Table.HeadCell>
-               <Table.Cell>{machineState.tool}</Table.Cell>
+               <Table.Cell>{tool}</Table.Cell>
              </Table.Row>
              </Table.Body>
            </Table>
@@ -44,23 +56,23 @@ export default function SystemState() {
              <Table.Row title="Current velocity in meters per minute">
                <Table.HeadCell>Velocity</Table.HeadCell>
                <Table.Cell>
-                 {machineState.v}<span className="unit"></span> m/min
+                 {v}<span className="unit"></span> m/min
                </Table.Cell>
              </Table.Row>
              <Table.Row title="Programmed feed rate.">
                <Table.HeadCell>Feed</Table.HeadCell>
                <Table.Cell>
-                 {machineState.feed}<span className="unit"></span> mm/min
+                 {feed}<span className="unit"></span> mm/min
                </Table.Cell>
              </Table.Row>
              <Table.Row title="Programed and actual speed.">
                <Table.HeadCell>Speed</Table.HeadCell>
-               <Table.Cell>{machineState.speed}<span>&nbsp;(0)</span> RPM
+               <Table.Cell>{speed}<span>&nbsp;({s})</span> RPM
                </Table.Cell>
              </Table.Row>
              <Table.Row title="Load switch states.">
                <Table.HeadCell>Loads</Table.HeadCell>
-               <Table.Cell><span>1:{machineState['1oa'] ? 'On' : 'Off'}</span>&nbsp;<span>2:{ machineState['2oa'] ? 'On' : 'Off'}</span></Table.Cell>
+               <Table.Cell><span>1:{load1 ? 'On' : 'Off'}</span>&nbsp;<span>2:{ load2 ? 'On' : 'Off'}</span></Table.Cell>
              </Table.Row>
              </Table.Body>
            </Table>
@@ -72,7 +84,7 @@ export default function SystemState() {
                <Table.HeadCell>Remaining</Table.HeadCell>
                <Table.Cell
                   title="Total run time (days:hours:mins:secs)">
-                 <span>{ machineState.toolpath.time || '00:00:00'}</span>
+                 <span>{ toolpath.time || '00:00:00'}</span>
                </Table.Cell>
              </Table.Row>
              <Table.Row>
@@ -81,7 +93,7 @@ export default function SystemState() {
              </Table.Row>
              <Table.Row>
                <Table.HeadCell>Line</Table.HeadCell>
-               <Table.Cell>{machineState.toolpath.lines}</Table.Cell>
+               <Table.Cell>{toolpath.lines}</Table.Cell>
              </Table.Row>
              <Table.Row>
                <Table.HeadCell>Progress</Table.HeadCell>

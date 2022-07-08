@@ -1,9 +1,11 @@
 import { Button, Card } from 'flowbite-react';
 import GcodeViewer from 'components/GcodeViewer';
-import { useStore } from 'store/store';
+import { useMachineState } from 'store/store';
 import { useQuery } from 'react-query';
 
 export default function JobTab(props) {
+  const machineState = useMachineState().data;
+
   return (
      <Card>
        <Button.Group>
@@ -23,6 +25,11 @@ export default function JobTab(props) {
            <i className="bi bi-trash"/>
          </Button>
        </Button.Group>
+
+       <div className="text-white">
+         <p>Selected File: { machineState.selected }</p>
+         <p>Queued: { machineState.queued }</p>
+       </div>
 
        <div className="flex flex-row">
          <GcodeViewer/>
