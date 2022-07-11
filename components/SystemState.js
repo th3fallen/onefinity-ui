@@ -20,93 +20,93 @@ export default function SystemState() {
 
 
   return (
-     <Table className="table-auto w-full mt-10">
-       <Table.Body>
-       <Table.Row>
-         <Table.Cell>
-           <Table className="info">
-             <Table.Body>
-             <Table.Row>
-               <Table.HeadCell>State</Table.HeadCell>
-               <Table.Cell>{ cycle.toUpperCase() }</Table.Cell>
-             </Table.Row>
-             <Table.Row>
-               <Table.HeadCell>Message</Table.HeadCell>
-               <Table.Cell className="message"></Table.Cell>
-             </Table.Row>
-             <Table.Row title="Active machine units">
-               <Table.HeadCell>Units</Table.HeadCell>
-               <Table.Cell className="mach_units">
-                 <Select defaultValue={machUnits}>
+     <table className="table w-full mt-10">
+       <tbody>
+       <tr>
+         <td>
+           <table className="table w-full info border-1">
+             <tbody>
+             <tr>
+               <th>State</th>
+               <td>{ cycle.toUpperCase() }</td>
+             </tr>
+             <tr>
+               <th>Message</th>
+               <td className="message"></td>
+             </tr>
+             <tr title="Active machine units">
+               <th>Units</th>
+               <td className="mach_units">
+                 <select className="select select-bordered" defaultValue={machUnits}>
                    <option value="METRIC">METRIC</option>
                    <option value="IMPERIAL">IMPERIAL</option>
-                 </Select>
-               </Table.Cell>
-             </Table.Row>
-             <Table.Row title="Active tool">
-               <Table.HeadCell>Tool</Table.HeadCell>
-               <Table.Cell>{tool}</Table.Cell>
-             </Table.Row>
-             </Table.Body>
-           </Table>
-         </Table.Cell>
-         <Table.Cell>
-           <Table className="info">
-             <Table.Body>
-             <Table.Row title="Current velocity in meters per minute">
-               <Table.HeadCell>Velocity</Table.HeadCell>
-               <Table.Cell>
+                 </select>
+               </td>
+             </tr>
+             <tr title="Active tool">
+               <th>Tool</th>
+               <td>{tool}</td>
+             </tr>
+             </tbody>
+           </table>
+         </td>
+         <td>
+           <table className="table w-full info">
+             <tbody>
+             <tr title="Current velocity in meters per minute">
+               <th>Velocity</th>
+               <td>
                  {v}<span className="unit"></span> m/min
-               </Table.Cell>
-             </Table.Row>
-             <Table.Row title="Programmed feed rate.">
-               <Table.HeadCell>Feed</Table.HeadCell>
-               <Table.Cell>
+               </td>
+             </tr>
+             <tr title="Programmed feed rate.">
+               <th>Feed</th>
+               <td>
                  {feed}<span className="unit"></span> mm/min
-               </Table.Cell>
-             </Table.Row>
-             <Table.Row title="Programed and actual speed.">
-               <Table.HeadCell>Speed</Table.HeadCell>
-               <Table.Cell>{speed}<span>&nbsp;({s})</span> RPM
-               </Table.Cell>
-             </Table.Row>
-             <Table.Row title="Load switch states.">
-               <Table.HeadCell>Loads</Table.HeadCell>
-               <Table.Cell><span>1:{load1 ? 'On' : 'Off'}</span>&nbsp;<span>2:{ load2 ? 'On' : 'Off'}</span></Table.Cell>
-             </Table.Row>
-             </Table.Body>
-           </Table>
-         </Table.Cell>
-         <Table.Cell>
-           <Table className="info">
-             <Table.Body>
-             <Table.Row>
-               <Table.HeadCell>Remaining</Table.HeadCell>
-               <Table.Cell
+               </td>
+             </tr>
+             <tr title="Programed and actual speed.">
+               <th>Speed</th>
+               <td>{speed}<span>&nbsp;({s})</span> RPM
+               </td>
+             </tr>
+             <tr title="Load switch states.">
+               <th>Loads</th>
+               <td><span>1:{load1 ? 'On' : 'Off'}</span>&nbsp;<span>2:{ load2 ? 'On' : 'Off'}</span></td>
+             </tr>
+             </tbody>
+           </table>
+         </td>
+         <td>
+           <table className="table w-full info">
+             <tbody>
+             <tr>
+               <th>Remaining</th>
+               <td
                   title="Total run time (days:hours:mins:secs)">
                  <span>{ toolpath.time || '00:00:00'}</span>
-               </Table.Cell>
-             </Table.Row>
-             <Table.Row>
-               <Table.HeadCell>ETA</Table.HeadCell>
-               <Table.Cell className="eta">TODO</Table.Cell>
-             </Table.Row>
-             <Table.Row>
-               <Table.HeadCell>Line</Table.HeadCell>
-               <Table.Cell>{toolpath.lines}</Table.Cell>
-             </Table.Row>
-             <Table.Row>
-               <Table.HeadCell>Progress</Table.HeadCell>
-               <Table.Cell className="progress">
+               </td>
+             </tr>
+             <tr>
+               <th>ETA</th>
+               <td className="eta">TODO</td>
+             </tr>
+             <tr>
+               <th>Line</th>
+               <td>{toolpath.lines}</td>
+             </tr>
+             <tr>
+               <th>Progress</th>
+               <td className="progress">
                  <label>TODO</label>
                  <div className="bar"></div>
-               </Table.Cell>
-             </Table.Row>
-             </Table.Body>
-           </Table>
-         </Table.Cell>
-       </Table.Row>
-       </Table.Body>
-     </Table>
+               </td>
+             </tr>
+             </tbody>
+           </table>
+         </td>
+       </tr>
+       </tbody>
+     </table>
   );
 }

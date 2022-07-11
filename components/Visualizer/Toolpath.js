@@ -1,6 +1,8 @@
 import { BufferGeometry, Float32BufferAttribute, Line, LineBasicMaterial, Uint8BufferAttribute } from 'three';
+import { useThree } from '@react-three/fiber';
 
-export default function Toolpath(toolpath) {
+export default function Toolpath({ toolpath }) {
+  const { scene } = useThree();
   const getColor = (speed) => {
     if (isNaN(speed)) return [255, 0, 0]; // Rapid
 
@@ -30,5 +32,6 @@ export default function Toolpath(toolpath) {
   geometry.computeBoundingSphere();
   geometry.computeBoundingBox();
 
-  return new Line(geometry, material);
+  scene.add(new Line(geometry, material));
+  return null;
 }

@@ -1,9 +1,11 @@
 import { CylinderGeometry, Group, Mesh, MeshPhongMaterial, Vector3 } from 'three';
-import Box from 'components/Visualizer/Box';
+import Box, { buildBounds } from 'components/Visualizer/Box';
+import { useMachineState } from 'store/store';
 
 // yes i know i could use AxesHelper from three but this is prettier and i hate myself
 
 export default function Axis() {
+  const axisInfo = useMachineState().data.axis_data;
 
   const drawAxis = (axis, length, radius) => {
     let color;
@@ -31,7 +33,7 @@ export default function Axis() {
     return group;
   };
 
-  const size = Box().getSize(new Vector3());
+  const size = buildBounds(axisInfo).getSize(new Vector3());
   let length = Math.max((size.x + size.y + size.z) / 10, 1);
   length /= 10;
 

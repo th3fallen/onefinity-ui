@@ -1,39 +1,29 @@
-import { Tabs } from 'flowbite-react';
 import JobTab from 'components/JobTabs/JobTab';
 
 export default function JobTabs() {
   return (
-     <Tabs.Group
-        aria-label="Tabs with icons"
-        style="underline"
-     >
-       <Tabs.Item
-          active={true}
-          title="Auto"
-       >
-         <JobTab />
-       </Tabs.Item>
-       <Tabs.Item
-          title="MDI"
-       >
+     <div className="tabs" aria-label="Tabs with icons">
+       <a className="tab tab-bordered tab-active" title="Auto">
+         <JobTab/>
+       </a>
+       <a className="tab tab-bordered" title="MDI">
          Dashboard content
-       </Tabs.Item>
-       <Tabs.Item
+       </a>
+       <a className="tab tab-bordered"
           title="Messages"
        >
          Settings content
-       </Tabs.Item>
-       <Tabs.Item
+       </a>
+       <a className="tab tab-bordered"
           title="Indicators"
        >
          Contacts content
-       </Tabs.Item>
-       <Tabs.Item
-          disabled={true}
+       </a>
+       <a className="tab tab-bordered"
           title="Disabled"
        >
          Disabled content
-       </Tabs.Item>
-     </Tabs.Group>
+       </a>
+     </div>
   );
 }

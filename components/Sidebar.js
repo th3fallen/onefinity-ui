@@ -1,15 +1,12 @@
-import { Sidebar as FlowSidebar } from 'flowbite-react';
 export default function Sidebar() {
   return (
-       <FlowSidebar aria-label="Sidebar">
-         <FlowSidebar.Items>
-           <FlowSidebar.ItemGroup>
-             <FlowSidebar.Item label="Dashboard" />
-             <FlowSidebar.Item label="Macros" />
-             <FlowSidebar.Item label="Settings" />
+     <div className="drawer-side">
+       <label htmlFor="sidebar" className="drawer-overlay"></label>
+       <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
+         <li><a>Sidebar Item 1</a></li>
+         <li><a>Sidebar Item 2</a></li>
 
-           </FlowSidebar.ItemGroup>
-         </FlowSidebar.Items>
-       </FlowSidebar>
+       </ul>
+     </div>
   );
 }

@@ -5,6 +5,8 @@ import Scene from 'components/Visualizer/Scene';
 import { OrbitControls } from '@react-three/drei';
 import { useMachineState } from 'store/store';
 import { useQuery } from 'react-query';
+import DrawBounds from 'components/Visualizer/Box';
+import Toolpath from 'components/Visualizer/Toolpath';
 
 export default function GcodeViewer(props) {
   const selectedFile = useMachineState().data?.selected;
@@ -43,6 +45,8 @@ export default function GcodeViewer(props) {
        >
          <Scene toolpath={ data }/>
          <Suspense fallback={ Loading }>
+           <DrawBounds toolpath={ data }/>
+           <Toolpath toolpath={ data }/>
          </Suspense>
          <OrbitControls/>
        </Canvas>

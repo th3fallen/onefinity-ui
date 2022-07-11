@@ -3,7 +3,7 @@ import {
   BoxGeometry,
   BufferGeometry,
   Float32BufferAttribute,
-  FrontSide,
+  FrontSide, GridHelper,
   LineBasicMaterial,
   LineSegments,
   Mesh,
@@ -102,18 +102,35 @@ export const generateWorkpiece = (toolpath, scene) => {
   return mesh;
 };
 
-export default function DrawBounds(toolpath) {
-  const { scene } = useThree();
-  const axisInfo = useMachineState().data.axis_data;
-
+export function buildBounds(axisInfo) {
   const min = new Vector3(axisInfo.x.min - axisInfo.x.off, axisInfo.y.min - axisInfo.y.off, axisInfo.z.min - axisInfo.z.off);
   const max = new Vector3(axisInfo.x.max - axisInfo.x.off, axisInfo.y.max - axisInfo.y.off, axisInfo.z.max - axisInfo.z.off);
 
-  box = new Box3(min, max);
+  return new Box3(min, max);
+}
+
+export default function DrawBounds({ toolpath }) {
+  const { scene } = useThree();
+  const axisInfo = useMachineState().data.axis_data;
+
+  if (!toolpath) {
+    return null;
+  }
+
+  const box = buildBounds(axisInfo);
+
+  const gridFloor = new GridHelper(1000, 10);
+  gridFloor.rotateOnAxis(new Vector3(1, 0, 0), -Math.PI / 2); // lay flat on  our z axis (world X)
+  const center = new Vector3();
+  box.getCenter(center);
+  gridFloor.position.z = -33;
+  gridFloor.position.x = center.x;
+  gridFloor.position.y = center.y;
+  scene.add(gridFloor);
 
   generateWorkpiece(toolpath, scene);
   scene.add(generateEnvelope(box));
   scene.add(Tool(box, axisInfo));
 
-  return box;
+  return null;
 }

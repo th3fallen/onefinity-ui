@@ -34,66 +34,68 @@ export default function AxisInfo() {
 
   const buildAxisRow = (axis) => {
     return (
-       <Table.Row className={ `axis axis-${ axis }` }>
-         <Table.Cell className="axis-name text-2xl uppercase">{ axis }</Table.Cell>
-         <Table.Cell>
+       <tr className={ `axis axis-${ axis }` }>
+         <td className="axis-name text-2xl uppercase">{ axis }</td>
+         <td>
            <Number value={ axisInfo[axis].pos } precision={ 4 }/>
-         </Table.Cell>
-         <Table.Cell>
+         </td>
+         <td>
            <Number value={ axisInfo[axis].abs } precision={ 3 }/>
-         </Table.Cell>
-         <Table.Cell>
+         </td>
+         <td>
            <Number value={ axisInfo[axis].off } precision={ 3 }/>
-         </Table.Cell>
-         <Table.Cell>{ renderAxisState(axis) }</Table.Cell>
-         <Table.Cell>{ renderToolpathState(axis) }</Table.Cell>
-         <Table.Cell>
+         </td>
+         <td>{ renderAxisState(axis) }</td>
+         <td>{ renderToolpathState(axis) }</td>
+         <td>
            <div className="flex items-center gap-1 justify-end">
-             <Button.Group outline>
-               <Button color="dark" className="" title={ `Set ${ axis } axis position.` }>
+             <div className="btn-group">
+               <div className="btn btn-outline" title={ `Set ${ axis } axis position.` }>
                  <i className="bi bi-gear-wide"/>
-               </Button>
-               <Button color="dark" className="" title={ `Zero ${ axis } axis offset.` }>
+               </div>
+               <div className="btn btn-outline" title={ `Zero ${ axis } axis offset.` }>
                  <i className="bi bi-geo-alt-fill"/>
-               </Button>
-               <Button color="dark" className="" title={ `Home ${ axis } axis.` }>
+               </div>
+               <div className="btn btn-outline" title={ `Home ${ axis } axis.` }>
                  <i className="bi bi-house-fill"/>
-               </Button>
-             </Button.Group>
+               </div>
+             </div>
            </div>
-         </Table.Cell>
+         </td>
 
-       </Table.Row>
+       </tr>
     );
   };
 
   return (
-     <Table className="axis-info">
-       <Table.Head>
-         <Table.HeadCell>Axis</Table.HeadCell>
-         <Table.HeadCell className="w-96">Positions</Table.HeadCell>
-         <Table.HeadCell>Absolute</Table.HeadCell>
-         <Table.HeadCell>Offset</Table.HeadCell>
-         <Table.HeadCell>State</Table.HeadCell>
-         <Table.HeadCell>Toolpath</Table.HeadCell>
-         <Table.HeadCell>
-           <div className="flex items-center gap-1 justify-end">
-             <Button.Group outline>
-               <Button color="dark" className="" title={ `Zero all axis offset.` }>
-                 <i className="bi bi-geo-alt-fill"/>
-               </Button>
-               <Button color="dark" className="" title={ `Home all axis.` }>
-                 <i className="bi bi-house-fill"/>
-               </Button>
-             </Button.Group>
-           </div>
-         </Table.HeadCell>
-       </Table.Head>
-       <Table.Body>
+     <table className="axis-info table w-full">
+       <thead>
+         <tr>
+           <th>Axis</th>
+           <th className="w-96">Positions</th>
+           <th>Absolute</th>
+           <th>Offset</th>
+           <th>State</th>
+           <th>Toolpath</th>
+           <th>
+             <div className="flex items-center gap-1 justify-end">
+               <div className="btn-group">
+                 <div className="btn btn-outline" title={ `Zero all axis offset.` }>
+                   <i className="bi bi-geo-alt-fill"/>
+                 </div>
+                 <div className="btn btn-outline" title={ `Home all axis.` }>
+                   <i className="bi bi-house-fill"/>
+                 </div>
+               </div>
+             </div>
+           </th>
+         </tr>
+       </thead>
+       <tbody>
          { buildAxisRow('x') }
          { buildAxisRow('y') }
          { buildAxisRow('z') }
-       </Table.Body>
-     </Table>
+       </tbody>
+     </table>
   );
 }

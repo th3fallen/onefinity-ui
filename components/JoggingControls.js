@@ -3,19 +3,21 @@ import { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 
 import 'styles/JoggingControls.scss';
-import { useMachineState, useStore } from 'store/store';
+import { useStore } from 'store/store';
 import classNames from 'classnames';
 import shallow from 'zustand/shallow';
 
 export default function JoggingControls() {
 
-  const [jogInc, machUnits] = useStore(state => [state.machineState.data.jog_incr, state.machineState.data.mach_units], shallow);
+  const [jogInc, machUnits, toolDiameter] = useStore(state => [
+    state.machineState.data.jog_incr,
+    state.machineState.data.mach_units,
+    state.machineState.data.tool_diameter], shallow);
+  const [probeConfig] = useStore(state => [state.config.data.probe], shallow);
   const { sendMessage } = useWebSocket('ws://10.0.0.94/sockjs/websocket', {
     share: true,
     filter: () => false, // ignore all message updates
   });
-
-  console.log('JoggingControls:17', jogInc, machUnits);
 
   const [jogIncrement, setJogIncrement] = useState(jogInc);
 
@@ -35,8 +37,72 @@ export default function JoggingControls() {
     sendMessage(`G91\nG0 ${ xDirection } ${ yDirection } ${ zDirection } ${ aDirection }\n`);
   };
 
-  const probe = (axis) => () => {
+  // todo: make this more adaptive and support probing any direction or run custom probing macros
+  const probe = (zOnly) => () => {
+    const xProbe = probeConfig['probe-xdim'];
+    const yProbe = probeConfig['probe-ydim'];
+    const zProbe = probeConfig['probe-zdim'];
+    const slowSeek = probeConfig['probe-slow-seek'];
+    const fastSeek = probeConfig['probe-fast-seek'];
 
+    const zLift = 1;
+    const xOffset = xProbe + (toolDiameter / 2);
+    const yOffset = yProbe + (toolDiameter / 2);
+    const zOffset = zProbe;
+
+    const isMetric = machUnits === 'METRIC';
+    const toMM = unit => (isMetric ? unit : unit / 25.4).toFixed(5);
+    const toSpeed = speed => `F${ toMM(speed) }`;
+
+    // After probing Z, we want to drop the bit down
+    const plunge = Math.min(12.7, zOffset * 0.75) + zLift;
+
+    if (zOnly) {
+      sendMessage(`
+      ${ isMetric ? 'G21' : 'G20' }
+      G92 Z0
+      
+      G38.2 Z ${ toMM(-25.2) } ${ toSpeed(fastSeek) }
+      G91 G1 Z ${ toMM(1) }
+      G38.2 Z ${ toMM(-2) } ${ toSpeed(slowSeek) }
+      G92 Z ${ toMM(zOffset) }
+      
+      G91 G0 Z ${ toMM(3) }
+      
+      M2
+      `);
+    } else {
+      sendMessage(`
+          ${ isMetric ? 'G21' : 'G20' }
+          G92 X0 Y0 Z0
+          
+          G38.2 Z ${ toMM(-25.4) } ${ toSpeed(fastSeek) }
+          G91 G1 Z ${ toMM(1) }
+          G38.2 Z ${ toMM(-2) } ${ toSpeed(slowSeek) }
+          G92 Z ${ toMM(zProbe) }
+        
+          G91 G0 Z ${ toMM(zLift) }
+          G91 G0 X ${ toMM(20) }
+          G91 G0 Z ${ toMM(-plunge) }
+          G38.2 X ${ toMM(-20) } ${ toSpeed(fastSeek) }
+          G91 G1 X ${ toMM(1) }
+          G38.2 X ${ toMM(-2) } ${ toSpeed(slowSeek) }
+          G92 X ${ toMM(xProbe) }
+
+          G91 G0 X ${ toMM(1) }
+          G91 G0 Y ${ toMM(20) }
+          G91 G0 X ${ toMM(-20) }
+          G38.2 Y ${ toMM(-20) } ${ toSpeed(fastSeek) }
+          G91 G1 Y ${ toMM(1) }
+          G38.2 Y ${ toMM(-2) } ${ toSpeed(slowSeek) }
+          G92 Y ${ toMM(xProbe) }
+
+          G91 G0 Y ${ toMM(3) }
+          G91 G0 Z ${ toMM(25.4) }
+
+          M2
+        `)
+    }
   };
 
   const goToZero = () => {
